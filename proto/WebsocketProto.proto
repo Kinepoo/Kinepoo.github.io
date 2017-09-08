@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package hullbreakers;
+
+option java_package = "com.rastergames.protobuf";
+option java_outer_classname = "WebsocketProto";
+
+enum MessageType {
+  INVALID = 0;
+  HANDSHAKE = 1;
+  HANDSHAKE_RESPONSE = 2;
+}
+
+message Base {
+  MessageType type = 1;
+
+  Handshake handshake = 2;
+  HandshakeResponse handshakeResponse = 3;
+}
+
+message Handshake {
+	string playerId = 1;
+	string token = 2;
+}
+
+message HandshakeResponse {
+	int32 statusCode = 1;
+}

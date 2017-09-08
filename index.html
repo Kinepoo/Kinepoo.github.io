@@ -1,1 +1,138 @@
-echo "Hello World"
+<!DOCTYPE html>
+<html>
+<script id="shader-fs" type="x-shader/x-fragment">
+    precision mediump float;
+
+    void main(void) {
+        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    }
+</script>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+    }
+</script>
+
+<script id="skyboxVertexShader" type="x-shader/x-vertex">
+    uniform mat4 projection;
+     uniform mat4 modelview;
+     attribute vec3 coords;
+     varying vec3 vCoords;
+     void main() {
+        vec4 eyeCoords = modelview * vec4(coords,1.0);
+        gl_Position = projection * eyeCoords;
+        vCoords = coords;//gl_Position.xyz;
+     }
+</script>
+
+<script id="skyboxFragmentShader" type="x-shader/x-fragment">
+    precision mediump float;
+     varying vec3 vCoords;
+     uniform samplerCube skybox;
+     void main() {
+          gl_FragColor = textureCube(skybox, vCoords);
+          //gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+     }
+</script>
+
+<script id="quadVertexShader" type="x-shader/x-vertex">
+    precision lowp float;
+
+    // xy = vertex position in normalized device coordinates ([-1,+1] range).
+    uniform mat4 projection;
+    uniform mat4 modelview;
+    attribute vec2 vertexPosition;
+    varying vec2 vTexCoords;
+    const vec2 scale = vec2(0.5, 0.5);
+
+    void main()
+    {
+        vTexCoords  = vertexPosition * scale + scale; // scale vertex attribute to [0,1] range
+        vec4 eyeCoords = modelview * vec4(vertexPosition, 0.0, 1.0);
+        gl_Position = projection * eyeCoords;
+    }
+</script>
+
+<script id="quadFragmentShader" type="x-shader/x-fragment">
+    precision mediump float;
+    uniform sampler2D colorMap;
+    varying vec2 vTexCoords;
+
+    void main()
+    {
+        gl_FragColor = texture2D(colorMap, vTexCoords);
+    }
+</script>
+
+<script id="blockVertexShader" type="x-shader/x-vertex">#version 300 es
+    precision highp float;
+
+    // xy = vertex position in normalized device coordinates ([-1,+1] range).
+    uniform mat4 projection;
+    uniform mat4 modelview;
+    layout(location = 0) in vec2 vertexPosition;
+    layout(location = 1) in vec2 textureCoordinates;
+
+    out vec2 vTexCoords;
+
+    void main()
+    {
+        vTexCoords = textureCoordinates;
+        vec4 eyeCoords = modelview * vec4(vertexPosition, 0.0, 1.0);
+        gl_Position = projection * eyeCoords;
+    }
+</script>
+
+<script id="blockFragmentShader" type="x-shader/x-fragment">#version 300 es
+
+    precision highp float;
+    precision highp sampler2DArray;
+    precision highp sampler2D;
+
+    uniform sampler2DArray colorMap;
+    uniform sampler2D blockMap;
+    in vec2 vTexCoords;
+
+    uniform vec2 blockMapDimensions;
+
+    out vec4 outColor;
+
+    void main()
+    {
+        float localU = vTexCoords.x * blockMapDimensions.x;
+        float localV = vTexCoords.y * blockMapDimensions.y;
+        vec2 newTexCoord = vec2(localU, localV);
+
+        float iStep = float(int(localU));
+        float jStep = float(int(localV));
+
+        float du = (localU - iStep);
+        float dv = (localV - jStep);
+        vec2 dPdx = dFdx(newTexCoord);
+        vec2 dPdy = dFdy(newTexCoord);
+
+        vec4 block = texture(blockMap, vTexCoords);
+        float r = block.r * 255.0;
+        outColor = textureGrad(colorMap, vec3(du, dv, r), dPdx, dPdy);
+        
+    }
+</script>
+
+<script type="text/javascript" src="js/gl/gl-matrix-min.js"></script>
+<script type="text/javascript" src="js/gl/basic-objects-IFS.js" ></script>
+<script src="//cdn.rawgit.com/dcodeIO/protobuf.js/6.8.0/dist/protobuf.min.js"></script>
+<script type="text/javascript" src="js/rg.js" ></script>
+<head>
+  <title>Hull Breakers</title>
+</head>
+<body onload="main();">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <canvas id="webcanvas" style="border: none;" width="500" height="500"></canvas>
+</body>
+</html>

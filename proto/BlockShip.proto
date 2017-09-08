@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package hullbreakers;
+
+option java_package = "com.rastergames.protobuf";
+option java_outer_classname = "BlockShip";
+
+enum BlockType {
+  WALL_CORNER = 0;
+  WALL_SIDE = 1;
+  WALL_FILLED = 2;
+}
+
+enum Orientation {
+	NORTH = 0;
+	EAST = 1;
+	SOUTH = 2;
+	WEST = 3;
+}
+
+message Mass {
+  repeated Block blocks = 1;
+  string name = 2;
+}
+
+message Block {
+	BlockType type = 1;
+	Orientation orientation = 2;
+	int32 colorIndex = 3;
+	int32 x = 4;
+	int32 y = 5;
+}
