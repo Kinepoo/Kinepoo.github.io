@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html>
+<meta name="google-signin-client_id" content="11966820331-p9h7paf207auh8qafuvbps2ll19gippu.apps.googleusercontent.com">
+<script src="https://apis.google.com/js/platform.js" async defer></script>
 <script type="text/javascript">
 function main(){
     console.log("Main! Connecting socket");
@@ -18,11 +20,20 @@ function main(){
         console.log(event);
     };
 }
+function onSignIn(googleUser) {
+  var profile = googleUser.getBasicProfile();
+  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+  console.log('Name: ' + profile.getName());
+  console.log('Image URL: ' + profile.getImageUrl());
+  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+}
 </script>
 <head>
   <title>Secure Sockets Test</title>
 </head>
 <body oncontextmenu="return false;" onload="main();">
-    <div id="yo">To swap</div>
+    <div id="yo">To swap</div><br>
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
 </body>
 </html>
+
