@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<script type="text/javascript">
+function main(){
+    console.log("Main! Connecting socket");
+    var divBox = document.getElementById("yo");
+    divBox.innerHTML = "Step 1";
+
+    var ip = "wss://84.211.51.80:8081/websocket";
+    var socket = new WebSocket(ip);
+
+    socket.onopen = function (event) {
+        console.log("WebSocket: On connected");
+        console.log(event);
+    };
+    socket.onmessage = function(event){
+        console.log("WebSocket: Got message");
+        console.log(event);
+    };
+}
+</script>
+<head>
+  <title>Secure Sockets Test</title>
+</head>
+<body oncontextmenu="return false;" onload="main();">
+    <div id="yo">To swap</div>
+</body>
+</html>
