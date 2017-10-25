@@ -8,7 +8,7 @@ function main(){
     var divBox = document.getElementById("yo");
     divBox.innerHTML = "Step 1";
 
-    var ip = "wss://84.211.51.80:8081/websocket";
+    var ip = "wss://84.211.51.80:443/websocket";
     var socket = new WebSocket(ip);
 
     socket.onopen = function (event) {
