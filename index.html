@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html>
+<meta name="google-signin-client_id" content="11966820331-p9h7paf207auh8qafuvbps2ll19gippu.apps.googleusercontent.com">
+
 <script id="shader-fs" type="x-shader/x-fragment">
     precision mediump float;
 
@@ -41,32 +43,66 @@
      }
 </script>
 
-<script id="quadVertexShader" type="x-shader/x-vertex">
-    precision lowp float;
+<script id="quadVertexShader" type="x-shader/x-vertex">#version 300 es
+    precision highp float;
 
     // xy = vertex position in normalized device coordinates ([-1,+1] range).
     uniform mat4 projection;
     uniform mat4 modelview;
-    attribute vec2 vertexPosition;
-    varying vec2 vTexCoords;
-    const vec2 scale = vec2(0.5, 0.5);
+    layout(location = 0) in vec2 vertexPosition;
+    layout(location = 1) in vec2 textureCoordinates;
+    
+    out vec2 vTexCoords;
 
     void main()
     {
-        vTexCoords  = vertexPosition * scale + scale; // scale vertex attribute to [0,1] range
+        vTexCoords = textureCoordinates;
         vec4 eyeCoords = modelview * vec4(vertexPosition, 0.0, 1.0);
         gl_Position = projection * eyeCoords;
     }
 </script>
 
-<script id="quadFragmentShader" type="x-shader/x-fragment">
-    precision mediump float;
+<script id="quadFragmentShader" type="x-shader/x-fragment">#version 300 es
+    precision highp float;
     uniform sampler2D colorMap;
-    varying vec2 vTexCoords;
+    in vec2 vTexCoords;
+    out vec4 outColor;
 
     void main()
     {
-        gl_FragColor = texture2D(colorMap, vTexCoords);
+        outColor = texture(colorMap, vTexCoords);
+    }
+</script>
+
+<script id="quadOffsetVertexShader" type="x-shader/x-vertex">#version 300 es
+    precision highp float;
+
+    // xy = vertex position in normalized device coordinates ([-1,+1] range).
+    uniform mat4 projection;
+    uniform mat4 modelview;
+    uniform vec2 uvOffset;
+    layout(location = 0) in vec2 vertexPosition;
+    layout(location = 1) in vec2 textureCoordinates;
+    
+    out vec2 vTexCoords;
+
+    void main()
+    {
+        vTexCoords = textureCoordinates + uvOffset;
+        vec4 eyeCoords = modelview * vec4(vertexPosition, 0.0, 1.0);
+        gl_Position = projection * eyeCoords;
+    }
+</script>
+
+<script id="quadOffsetFragmentShader" type="x-shader/x-fragment">#version 300 es
+    precision highp float;
+    uniform sampler2D colorMap;
+    in vec2 vTexCoords;
+    out vec4 outColor;
+
+    void main()
+    {
+        outColor = texture(colorMap, vTexCoords);
     }
 </script>
 
@@ -124,15 +160,84 @@
     }
 </script>
 
+<script id="pointsVertexShader" type="x-shader/x-vertex">#version 300 es
+    precision highp float;
+
+    // xy = vertex position in normalized device coordinates ([-1,+1] range).
+    uniform mat4 projection;
+    uniform mat4 modelview;
+    layout(location = 0) in vec2 vertexPosition;
+    layout(location = 1) in vec4 colorPosition;
+
+    out vec4 colors;
+
+    void main()
+    {
+        colors = colorPosition;
+        gl_PointSize = 1.0;
+        //vec4 eyeCoords = modelview * vec4(vertexPosition, 0.0, 1.0);
+        gl_Position = vec4(vertexPosition, 0.0, 1.0);//projection * eyeCoords;
+    }
+</script>
+
+<script id="pointsFragmentShader" type="x-shader/x-fragment">#version 300 es
+    precision highp float;
+
+    in vec4 colors;
+    out vec4 outColor;
+
+    void main()
+    {
+        outColor = colors;
+    }
+</script>
+
+<script id="linesVertexShader" type="x-shader/x-vertex">#version 300 es
+    precision highp float;
+
+    // xy = vertex position in normalized device coordinates ([-1,+1] range).
+    uniform mat4 projection;
+    uniform mat4 modelview;
+    layout(location = 0) in vec2 vertexPosition;
+    layout(location = 1) in vec4 colorPosition;
+
+    out vec4 colors;
+
+    void main()
+    {
+        colors = colorPosition;
+        //gl_PointSize = 1.0;
+        vec4 eyeCoords = modelview * vec4(vertexPosition, 0.0, 1.0);
+        gl_Position = projection * eyeCoords; //vec4(vertexPosition, 0.0, 1.0);
+    }
+</script>
+
+<script id="linesFragmentShader" type="x-shader/x-fragment">#version 300 es
+    precision highp float;
+
+    in vec4 colors;
+    out vec4 outColor;
+
+    void main()
+    {
+        outColor = colors;
+    }
+</script>
+
+<script type="text/javascript" src="js/FileSaver.min.js"></script>
 <script type="text/javascript" src="js/gl/gl-matrix-min.js"></script>
 <script type="text/javascript" src="js/gl/basic-objects-IFS.js" ></script>
+<script src="https://apis.google.com/js/platform.js" async defer></script>
 <script src="//cdn.rawgit.com/dcodeIO/protobuf.js/6.8.0/dist/protobuf.min.js"></script>
 <script type="text/javascript" src="js/rg.js" ></script>
 <head>
   <title>Hull Breakers</title>
 </head>
-<body onload="main();">
+<body oncontextmenu="return false;" onload="main();">
     <link rel="stylesheet" type="text/css" href="style.css">
     <canvas id="webcanvas" style="border: none;" width="500" height="500"></canvas>
+    <br>
+    <center><button onclick="toggleFullScreen();">Full Screen</button><br>
+    <div class="g-signin2" data-onsuccess="onSignIn"></div></center>
 </body>
 </html>

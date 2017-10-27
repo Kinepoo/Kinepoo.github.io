@@ -6,6 +6,38 @@
     display: block;
 }
 
+#webcanvas:-webkit-full-screen {
+	margin:0;
+    border:0;
+    padding:0;
+    height:100%;
+    width:100%;
+}
+
+#webcanvas:-moz-full-screen {
+	margin:0;
+    border:0;
+    padding:0;
+    height:100%;
+    width:100%;
+}
+
+#webcanvas:-ms-fullscreen {
+	margin:0;
+    border:0;
+    padding:0;
+    height:100%;
+    width:100%;
+}
+
+#webcanvas:fullscreen {
+	margin:0;
+    border:0;
+    padding:0;
+    height:100%;
+    width:100%;
+}
+
 body {
     background-color: black;
 }

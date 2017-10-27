@@ -5,10 +5,11 @@ package hullbreakers;
 option java_package = "com.rastergames.protobuf";
 option java_outer_classname = "BlockShip";
 
-enum BlockType {
-  WALL_CORNER = 0;
-  WALL_SIDE = 1;
-  WALL_FILLED = 2;
+enum BlockType {  NO_BLOCK = 0;
+
+  WALL_CORNER = 1;
+  WALL_SIDE = 2;
+  FILLED = 3;
 }
 
 enum Orientation {

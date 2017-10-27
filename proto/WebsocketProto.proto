@@ -7,22 +7,56 @@ option java_outer_classname = "WebsocketProto";
 
 enum MessageType {
   INVALID = 0;
-  HANDSHAKE = 1;
-  HANDSHAKE_RESPONSE = 2;
+  AUTHENTICATE = 1;
+  AUTHENTICATE_RESPONSE = 2;
+  WELCOME = 3;
+  REQUEST_DESTINATIONS = 4;
+  REQUEST_DESTINATIONS_RESPONSE = 5;
+  REQUEST_TRAVEL = 6;
+  REQUEST_TRAVEL_RESPONSE = 7;
+  GOOGLE_SIGN_IN = 8;
 }
 
 message Base {
   MessageType type = 1;
 
-  Handshake handshake = 2;
-  HandshakeResponse handshakeResponse = 3;
+  Authenticate authenticate = 2;
+  AuthenticateResponse authenticateResponse = 3;
+  Welcome welcome = 4;
+  DestinationResponse destinationResponse = 5;
+  RequestTravel requestTravel = 6;
+  RequestTravelResponse requestTravelResponse = 7;
+  GoogleSignIn googleSignIn = 8;
 }
 
-message Handshake {
-	string playerId = 1;
+message Authenticate {
+	int64 playerId = 1;
 	string token = 2;
 }
 
-message HandshakeResponse {
+message AuthenticateResponse {
 	int32 statusCode = 1;
+}
+
+message Welcome {
+	int32 currentVersion = 1;
+}
+
+message DestinationResponse {
+  repeated int32 destinationIds = 1;
+  repeated int32 destinationPlayerCount = 2;
+  repeated string destinationNames = 3;
+}
+
+message RequestTravel {
+  int32 targetDestination = 1;
+}
+
+message RequestTravelResponse {
+  int32 targetDestination = 1;
+  string serverAddress = 2;
+}
+
+message GoogleSignIn {
+  string token = 1;
 }

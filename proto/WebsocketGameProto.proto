@@ -1,0 +1,116 @@
+syntax = "proto3";
+
+package hullbreakers;
+
+option java_package = "com.rastergames.protobuf";
+option java_outer_classname = "WebsocketGameProto";
+
+enum MessageType {
+  INVALID = 0;
+  AUTHENTICATE = 1;
+  AUTHENTICATE_RESPONSE = 2;
+  WELCOME = 3;
+  REQUEST_HOTSPOT = 4;
+  IDENTITY = 5;
+  CREATE_PLAYER = 6;
+  REMOVE_PLAYER = 7;
+  CREATE_SHIP = 8;
+  REMOVE_SHIP = 9;
+  UPDATE_PLAYER_TRANSFORM = 10;
+  UPDATE_SHIP_TRANSFORM = 11;
+  STEER_SHIP = 12;
+  SHOOT = 13;
+}
+
+message GameBase {
+  MessageType type = 1;
+
+  GameAuthenticate authenticate = 2;
+  GameAuthenticateResponse authenticateResponse = 3;
+  GameWelcome welcome = 4;
+  RequestHotspot requestHotspot = 5;
+  Identity identity = 6;
+
+  CreatePlayer createPlayer = 7;
+  RemovePlayer removePlayer = 8;
+  CreateShip createShip = 9;
+  RemoveShip removeShip = 10;
+  UpdatePlayerTransform updatePlayerTransform = 11;
+  UpdateShipTransform updateShipTransform = 12;
+  SteerShip steerShip = 13;
+  Shoot shoot = 14;
+}
+
+message GameAuthenticate {
+	int64 playerId = 1;
+	string token = 2;
+}
+
+message GameAuthenticateResponse {
+	int32 statusCode = 1;
+}
+
+message GameWelcome {
+	int32 currentVersion = 1;
+}
+
+message RequestHotspot {
+  int32 hotspotId = 1;
+}
+
+message Identity {
+  int32 identity = 1;
+  int32 hotspotId = 2;
+}
+
+message CreatePlayer {
+  int32 identity = 1;
+  string name = 2;
+}
+
+message RemovePlayer {
+  int32 identity = 1;
+}
+
+message CreateShip {
+  int32 identity = 1;
+  bytes ship = 2;
+}
+
+message RemoveShip {
+  int32 identity = 1;
+}
+
+message UpdatePlayerTransform {
+  int32 identity = 1;
+  float x = 2;
+  float y = 3;
+  float rotationZ = 4;
+  int32 attachedShip = 5;
+  float vx = 6;
+  float vy = 7;
+}
+
+message UpdateShipTransform {
+  int32 identity = 1;
+  float x = 2;
+  float y = 3;
+  float rotationZ = 4;
+  float vx = 5;
+  float vy = 6;
+  float timestamp = 7;
+}
+
+message SteerShip {
+  int32 identity = 1;
+  int32 shipId = 2;
+  float dx = 3;
+  float dy = 4;
+}
+
+message Shoot {
+  int32 identity = 1;
+  int32 weaponId = 2;
+  float dx = 3;
+  float dy = 4;
+}
