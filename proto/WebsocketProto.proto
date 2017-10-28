@@ -15,6 +15,9 @@ enum MessageType {
   REQUEST_TRAVEL = 6;
   REQUEST_TRAVEL_RESPONSE = 7;
   GOOGLE_SIGN_IN = 8;
+  GOOGLE_SIGN_IN_RESPONSE = 9;
+  REGISTER = 10;
+  REGISTER_RESPONSE = 11;
 }
 
 message Base {
@@ -27,6 +30,8 @@ message Base {
   RequestTravel requestTravel = 6;
   RequestTravelResponse requestTravelResponse = 7;
   GoogleSignIn googleSignIn = 8;
+  SignInResponse signInResponse = 9;
+  Register register = 10;
 }
 
 message Authenticate {
@@ -59,4 +64,16 @@ message RequestTravelResponse {
 
 message GoogleSignIn {
   string token = 1;
+}
+
+message SignInResponse {
+  int32 statusCode = 1;
+  int64 playerId = 2;
+  string token = 3;
+}
+
+message Register {
+  string googleToken = 1;
+  string facebookToken = 2;
+  string username = 3;
 }
